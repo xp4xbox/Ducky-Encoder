@@ -12,7 +12,8 @@ and place it in your `c:\temp` folder
 
 3. Run `Duck.hta` with the two other files in the same directory, or `Duck.exe` if you are using the standalone .exe version.
 
-4. Paste in your script or open the text file with your code. NOTE: this program only reads .txt files.
+4. Paste in your script or open the text file with your code. 
+> This program only reads .txt files.
 
 5. Hit Encode, and the program will encode your script to a file called `inject.bin` in `c:\temp`
 
