@@ -1,0 +1,109 @@
+<!--Duck Encoder VBScript, GUI made in hta. License: by-nc-sa xp4xbox http://www.instructables.com/member/xp4xbox/
+For usage of this program, please read 'README.txt'-->
+<html>
+<head>
+<title>Duck Encoder</title>
+<HTA:APPLICATION
+  APPLICATIONNAME="Duck Encoder"
+  ID="DuckEncoder"
+  VERSION="1.0"
+  BORDER="dialog"
+  INNERBORDER="no"
+  MAXIMIZEBUTTON="no"
+  ICON="ico.ico"
+  SCROLL="no"/>
+</head>
+
+<script language="VBScript">
+
+Sub Window_OnLoad
+  	self.resizeTo 400, 454
+  	'self.MoveTo (screen.AvailWidth-width)/2,(screen.AvailHeight-height)/2
+  	Dim objFso : Set objFso = CreateObject("Scripting.FileSystemObject")
+  	If Not objFso.FileExists("c:\temp\duckencode.jar") Then
+  		MsgBox "Error, file not found: c:\temp\duckencode.jar",16,"Duck Encoder"
+  		Self.close()
+  	End If
+End Sub
+
+Sub OnClickButtonbtnLoad()
+	'Unfortunatly there is no easy way to make an open-file dialog in hta.
+	Dim objShlApp, objFolderLocation, strFileLocation, objFso, objFolder, colFiles, strTextFileList, objFile
+	Dim strCompleteText
+	Set objFso = CreateObject("Scripting.FileSystemObject")
+	Set objShlApp = CreateObject("Shell.Application")
+	On Error Resume Next
+	Set objFolderLocation = objShlApp.BrowseForFolder(0, "Browse for folder containing the file: ",16384,0)
+	If Err.Number <> 0 Then
+		MsgBox "You must select the FOLDER containing the file.",16,"Duck Encoder"
+		Err.Clear()
+	Else
+		If objFolderLocation = "" Then Exit Sub
+		On Error Goto 0
+		Set objFolder = objFso.GetFolder(objFolderLocation.Self.Path & "\")
+		Set colFiles = objFolder.Files
+		strTextFileList = ""
+		For Each objFile In colFiles
+			If InStr(objFile.Name,".txt") <> False Then
+				strTextFileList = strTextFileList & objFile.Name & vbCrLf
+			End If
+		Next
+		strFileLocation = InputBox("Please enter the correct text file you wish to encode: " & vbCrLf & vbCrLf & strTextFileList,"Ducky Encoder")
+		If Not IsEmpty(strFileLocation) Then
+			If Not objFso.FileExists(objFolderLocation.Self.Path & "\" & strFileLocation) Then
+				MsgBox "Error, you must choose a text file from the list!",16,"Duck Encoder"
+			Else
+				On Error Resume Next
+				strFileLocation = objFolderLocation.Self.Path & "\" & strFileLocation
+				Set objFile = objFso.OpenTextFile(strFileLocation,1,FALSE)
+				txtScript.Value = objFile.ReadAll
+				objFile.Close()
+				If Err.Number <> 0 Then
+					MsgBox "Text file is empty.",16,"Duck Encoder"
+				End If
+			End If
+		End If
+	End if
+End Sub
+Sub OnClickButtonbtnPaste()
+	Dim objHTML, ClipboardText
+	Set objHTML = CreateObject("htmlfile")
+	ClipboardText = objHTML.ParentWindow.ClipboardData.GetData("text")
+	If IsNull(ClipboardText) = True Then
+		MsgBox "Nothing in the clipboard!",16,"Duck Encoder"
+	Else
+		txtScript.Value = ClipboardText
+	End If
+End Sub
+Sub OnClickButtonbtnEncode()
+  If txtScript.Value = "" Then 
+  	MsgBox "There is no code!",16,"Duck Encoder"
+  Else
+  	Dim objFso, txtScriptFile
+  	Set objFso = CreateObject("Scripting.Filesystemobject")
+	Set txtScriptFile = objFso.OpenTextFile("c:\temp\script.txt",2,True)
+	txtScriptFile.WriteLine(txtScript.Value)
+	txtScriptFile.Close()
+	idTimer = window.setTimeout("Compile", 800, "VBScript")
+  End If
+End Sub
+Sub Compile()
+	window.clearTimeout(idTimer)
+	Dim objWshShl : Set objWshShl = CreateObject("WScript.Shell")
+	objWshShl.Run "java.exe -jar c:\temp\duckencode.jar -i c:\temp\script.txt -o c:\temp\inject.bin",0
+	'MsgBox "Script compiled to inject.bin in c:\temp",vbOKOnly+vbInformation,"Ducky Encoder"
+End Sub
+</script>
+<img style="width: 365px; height: 200px; border: 0;" src="pic.gif" alt="Text Description"> 
+<body bgcolor="buttonface">
+<table border=0 width=100% height=100%>
+<tr><td height=100% width=100% valign=top align=left>
+<!--Add your controls here-->
+<input type="button" name="btnLoad" id="btnLoad" value="Load From Text File" onclick="OnClickButtonbtnLoad" style="width: 138px;" title="Load script from a text file">
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+<input type="button" name="btnPaste" id="btnPaste" value="Paste From Clipboard" onclick="OnClickButtonbtnPaste" style="width: 139px;" title="Paste in script from clipboard">
+<br><br><textarea name="txtScript" id="txtPaste" rows="7" cols="42"></textarea><br>
+<input type="button" name="btnEncode" id="btnEncode" value="Encode" onclick="OnClickButtonbtnEncode" style="width: 360px;" title="Encode script to inject.bin in c:\temp">
+<!--{{InsertControlsHere}}-Do not remove this line-->
+</body>
+</html>
