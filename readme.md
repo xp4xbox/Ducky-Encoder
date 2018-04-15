@@ -1,13 +1,13 @@
 # Ducky Encoder
-A USB Rubber Ducky Script encoder written in HTA/VBscript. Requires [duckencode.jar](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Downloads) to be placed in the `c:\temp` folder. Please refer to the [instructable](https://www.instructables.com/id/USB-Rubber-Ducky-Script-Encoder-VBScript/) for more information.
+A USB Rubber Ducky Script encoder written in HTA/VBscript. Please refer to the [instructable](https://www.instructables.com/id/USB-Rubber-Ducky-Script-Encoder-VBScript/) for more information.
 
 ## Usage
 
-1. If you don't already have a folder called temp in your C drive, create one.
+1. If you don't already have a folder called `temp` in the root of your `C` drive, create one.
 
-2. Install Java if you don't already have it installed:  https://www.java.com/en/
+2. Install (Java)[https://www.java.com/en/] if you don't already have it installed.
 
-2. Download the `duckencode.jar` from https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Downloads
+2. Download the (duckencode.jar)[https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Downloads]
 and place it in your `c:\temp` folder
 
 3. Run `Duck.hta` with the two other files in the same directory, or `Duck.exe` if you are using the standalone .exe version.
